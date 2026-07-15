@@ -1,0 +1,790 @@
+:root {
+    --bg-start: #071120;
+    --bg-end: #10213b;
+    --surface: rgba(255, 255, 255, 0.06);
+    --surface-strong: rgba(255, 255, 255, 0.05);
+    --surface-border: rgba(255, 255, 255, 0.08);
+    --text-color: #ffffff;
+    --input-bg: rgba(255, 255, 255, 0.08);
+    --input-border: rgba(255, 255, 255, 0.08);
+    --input-focus-bg: rgba(255, 255, 255, 0.12);
+    --accent-1: #00d2ff;
+    --accent-2: #3a7bd5;
+    --accent-success: #00ff9d;
+    --accent-danger: #ff6b6b;
+    --card-shadow: none;
+    --player-row-bg: rgba(255, 255, 255, 0.05);
+    --hr-color: rgba(255, 255, 255, 0.1);
+    --option-bg: #1e293b;
+    --theme-toggle-icon: "\f042";
+}
+
+[data-theme="light"] {
+    --bg-start: #eef3fb;
+    --bg-end: #f7fafc;
+    --surface: rgba(255, 255, 255, 0.85);
+    --surface-strong: rgba(15, 23, 42, 0.035);
+    --surface-border: rgba(15, 23, 42, 0.08);
+    --text-color: #0f1b2d;
+    --input-bg: rgba(15, 23, 42, 0.04);
+    --input-border: rgba(15, 23, 42, 0.14);
+    --input-focus-bg: rgba(15, 23, 42, 0.07);
+    --card-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    --player-row-bg: rgba(15, 23, 42, 0.035);
+    --hr-color: rgba(15, 23, 42, 0.1);
+    --option-bg: #ffffff;
+}
+
+* {
+    transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+
+body {
+    background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+    color: var(--text-color);
+}
+
+.screen {
+    display: none;
+}
+
+.screen.active {
+    display: block;
+}
+
+.main-card,
+.auction-box,
+.summary-box,
+.team-card,
+.dashboard-card {
+    background: var(--surface);
+    border-radius: 24px;
+    border: 1px solid var(--surface-border);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--card-shadow);
+}
+
+.main-card,
+.auction-box,
+.summary-box,
+.dashboard-card {
+    position: relative;
+    padding: 24px;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.25rem;
+}
+
+.section-title i {
+    color: var(--accent-1);
+    font-size: 1.1rem;
+}
+
+.title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    background: linear-gradient(to right, var(--accent-1), var(--accent-2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.form-control,
+.form-select {
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    color: var(--text-color);
+    height: 50px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background: var(--input-focus-bg);
+    color: var(--text-color);
+    box-shadow: 0 0 0 3px rgba(0, 210, 255, 0.25);
+    border-color: var(--accent-1);
+}
+
+.form-select option {
+    background: var(--option-bg);
+    color: var(--text-color);
+}
+
+.btn {
+    border-radius: 14px;
+    font-weight: 600;
+}
+
+.btn:focus-visible,
+a:focus-visible,
+input:focus-visible,
+button:focus-visible {
+    outline: 2px solid var(--accent-1);
+    outline-offset: 2px;
+}
+
+.btn-primary-custom {
+    background: linear-gradient(to right, var(--accent-1), var(--accent-2));
+    border: none;
+    color: white;
+    border-radius: 14px;
+    height: 50px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-primary-custom:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(0, 210, 255, 0.25);
+    color: white;
+}
+
+.btn-outline-light,
+.btn-warning,
+.btn-info {
+    transition: transform 0.15s ease;
+}
+
+.btn-outline-light:hover,
+.btn-warning:hover,
+.btn-info:hover {
+    transform: translateY(-1px);
+}
+
+.player-name {
+    color: var(--accent-1);
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.team-card {
+    padding: 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.team-card:hover {
+    transform: translateY(-3px);
+}
+
+.badge-custom {
+    background: rgba(0, 210, 255, 0.15);
+    color: var(--accent-1);
+    border-radius: 30px;
+    padding: 6px 12px;
+}
+
+.player-row {
+    background: var(--player-row-bg);
+    border-radius: 12px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.delete-btn {
+    border: none;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: rgba(255, 0, 0, 0.15);
+    color: var(--accent-danger);
+}
+
+.section-logo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.section-logo img {
+    width: 70px;
+}
+
+.theme-toggle-corner {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.dashboard-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.dashboard-logo {
+    width: 64px;
+    border-radius: 14px;
+}
+
+.toolbar-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.toolbar-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+.team-input-card {
+    background: var(--surface-strong);
+    border-radius: 18px;
+    border: 1px solid var(--surface-border);
+    padding: 18px;
+}
+
+.team-logo-preview {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--surface-border);
+}
+
+.tournament-banner-img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 24px;
+}
+
+#appLoader {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loader-content {
+    text-align: center;
+}
+
+.loader-logo {
+    width: 160px;
+    border-radius: 32px;
+}
+
+.loader-title {
+    margin-top: 20px;
+    font-size: 2.5rem;
+}
+
+.loader-bar {
+    width: 300px;
+    height: 8px;
+    background: var(--surface-strong);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 30px;
+}
+
+.loader-progress {
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(to right, var(--accent-1), var(--accent-2));
+    animation: loading 1.3s linear infinite;
+}
+
+@keyframes loading {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(300%);
+    }
+}
+
+#soldAnimation {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(10px);
+    z-index: 999999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.sold-box {
+    width: 100%;
+    max-width: 550px;
+    background: linear-gradient(135deg, rgba(0, 210, 255, 0.15), rgba(58, 123, 213, 0.15));
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 28px;
+    padding: 40px 30px;
+    text-align: center;
+    animation: soldPopup 0.6s ease;
+    box-shadow: 0 0 60px rgba(0, 210, 255, 0.15);
+    color: #ffffff;
+}
+
+.sold-logo {
+    width: 110px;
+    margin-bottom: 15px;
+    animation: logoSpin 4s linear infinite;
+    border-radius: 24px;
+}
+
+.sold-text {
+    font-size: 4rem;
+    font-weight: 900;
+    color: var(--accent-1);
+    margin-bottom: 15px;
+    text-shadow: 0 0 25px rgba(0, 210, 255, 0.5);
+}
+
+#soldPlayerName {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+#soldTeamName {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 20px;
+}
+
+.sold-price {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--accent-success);
+}
+
+@keyframes soldPopup {
+
+    from {
+        opacity: 0;
+        transform: scale(0.7) translateY(80px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0px);
+    }
+}
+
+@keyframes logoSpin {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media(max-width:768px) {
+    .title {
+        font-size: 1.7rem;
+    }
+
+    .dashboard-logo {
+        width: 52px;
+    }
+
+    .loader-logo {
+        width: 120px;
+    }
+
+    .loader-title {
+        font-size: 1.7rem;
+    }
+
+    .sold-text {
+        font-size: 2.5rem;
+    }
+
+    .sold-box {
+        padding: 25px;
+    }
+
+    .section-logo {
+        position: relative !important;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 10px;
+        top: 0px !important;
+        left: 0px !important;
+    }
+
+    .theme-toggle-corner {
+        top: 10px !important;
+        right: 10px !important;
+    }
+
+    .toolbar-actions {
+        width: 100%;
+    }
+
+    .toolbar-actions .btn {
+        flex: 1 1 calc(50% - 5px);
+    }
+
+    .toolbar-actions .btn span {
+        display: inline;
+    }
+}
+
+input[type="file"] {
+    padding: 0;
+    overflow: hidden;
+    height: 40px;
+    font-size: 14px;
+    padding-left: 10px;
+}
+
+input[type="file"]::file-selector-button {
+    height: 45px;
+    border: none;
+    padding: 0 18px;
+    margin-right: 15px;
+    background: linear-gradient(to right, var(--accent-1), var(--accent-2));
+    color: white;
+    cursor: pointer;
+    font-weight: normal;
+}
+
+input[type="file"]::file-selector-button:hover {
+    opacity: 0.9;
+}
+
+#soldTeamLogo {
+    width: 40px;
+    border-radius: 50%;
+}
+
+.player-popup-img {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 20px;
+    border: 3px solid rgba(255, 255, 255, .15);
+}
+
+.modal-content {
+    border-radius: 24px;
+}
+
+.modal-dialog-bottom {
+    margin-top: auto;
+}
+
+.player-list-img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.modal-header {
+    border: none;
+}
+
+.btn-primary-custom.findPlayer {
+    height: 40px;
+    width: 100%;
+}
+
+.player-card {
+    background: linear-gradient(135deg, rgb(4, 18, 26), rgb(24, 58, 92));
+    background-color: rgb(8, 22, 32);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+}
+
+.form-check-input {
+    background-color: var(--input-bg);
+    border-color: var(--input-border);
+}
+
+.form-check-input:checked {
+    background-color: var(--accent-1);
+    border-color: var(--accent-1);
+}
+
+.form-check-label {
+    opacity: 0.9;
+}
+
+code {
+    background: var(--surface-strong);
+    color: var(--accent-1);
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-size: 0.85em;
+}
+
+#liveViewQr {
+    border-radius: 16px;
+    padding: 12px;
+    background: #ffffff;
+}
+
+#zipUploadStatus {
+    color: var(--accent-success);
+    opacity: 0.9;
+}
+
+.app-dialog-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(0, 210, 255, 0.12);
+    color: var(--accent-1);
+    font-size: 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.app-dialog-icon.danger {
+    background: rgba(255, 107, 107, 0.12);
+    color: var(--accent-danger);
+}
+
+.app-dialog-icon.success {
+    background: rgba(0, 255, 157, 0.12);
+    color: var(--accent-success);
+}
+
+hr.border-secondary {
+    border-color: var(--hr-color) !important;
+    opacity: 1;
+}
+
+/* =========================================
+   FONT AWESOME 7 COMPATIBILITY FIX
+   The bundled Font Awesome build renders icon glyphs using a
+   `:is(.fas, .far, ...)::before { content: var(--fa) }` rule. Some
+   older Android System WebViews do not support the :is() selector,
+   which silently drops that entire rule and every icon disappears
+   even though the icon font itself loaded fine. This restores the
+   same rule with plain, universally-supported selectors.
+========================================= */
+.fa::before,
+.fas::before,
+.far::before,
+.fab::before,
+.fa-solid::before,
+.fa-regular::before,
+.fa-brands::before,
+.fa-classic::before {
+    content: var(--fa) / "";
+}
+
+/* =========================================
+   LIGHT THEME CONTRAST FIXES
+   Bootstrap's btn-outline-light is designed for permanently-dark
+   surfaces (white border/text). On the light theme these buttons
+   became a near-invisible white-on-white blob. Give them a themed
+   outline instead so they stay legible in both themes.
+========================================= */
+.btn-outline-light {
+    color: var(--text-color);
+    border-color: var(--input-border);
+    background: transparent;
+}
+
+.btn-outline-light:hover,
+.btn-outline-light:focus {
+    color: var(--text-color);
+    border-color: var(--accent-1);
+    background: var(--surface-strong);
+}
+
+/* Reset button gets a subtle danger tint so it reads as a
+   destructive action in both themes, instead of blending in. */
+.btn-outline-light[onclick="resetAuction()"] {
+    color: var(--accent-danger);
+    border-color: var(--accent-danger);
+}
+
+.btn-outline-light[onclick="resetAuction()"]:hover {
+    background: rgba(255, 107, 107, 0.12);
+    color: var(--accent-danger);
+}
+
+/* =========================================
+   INFO BUTTON (Live View "How does this work?")
+   Restyled into a clearer, rounder, higher-contrast icon button
+   instead of a barely-visible bootstrap outline circle.
+========================================= */
+.live-view-info-btn {
+    height: 38px;
+    padding: 0 16px;
+    border-radius: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 210, 255, 0.14);
+    border: 1px solid rgba(0, 210, 255, 0.4);
+    color: var(--accent-1);
+    font-weight: 600;
+}
+
+.live-view-info-btn i {
+    color: var(--accent-1);
+}
+
+.live-view-info-btn:hover {
+    background: rgba(0, 210, 255, 0.24);
+    color: var(--accent-1);
+    border-color: var(--accent-1);
+    transform: translateY(-1px);
+}
+
+/* =========================================
+   PLAYER-CARD MODAL CONTRAST FIX
+   .player-card always renders a dark gradient background by
+   design (regardless of app theme), but its inputs/labels used
+   var(--text-color), which flips to a dark colour in light mode —
+   making them unreadable against the still-dark modal. Pin the
+   internals of these modals to always-light colours so they stay
+   readable no matter which app theme is active.
+========================================= */
+.player-card,
+.player-card .modal-title,
+.player-card label,
+.player-card h3,
+.player-card h5,
+.player-card p {
+    color: #ffffff;
+}
+
+.player-card .form-control,
+.player-card .form-select {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+}
+
+.player-card .form-control:focus,
+.player-card .form-select:focus {
+    background: rgba(255, 255, 255, 0.16);
+    color: #ffffff;
+}
+
+.player-card .form-select option {
+    background: #1e293b;
+    color: #ffffff;
+}
+
+.player-card .opacity-75,
+.player-card small {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+/* =========================================
+   MANUAL PLAYER ENTRY (setup screen)
+========================================= */
+.manual-player-table {
+    max-height: 260px;
+    overflow-y: auto;
+    margin-top: 14px;
+}
+
+.manual-player-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--player-row-bg);
+    border-radius: 12px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.manual-player-row .role-tag {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: rgba(0, 210, 255, 0.15);
+    color: var(--accent-1);
+    margin-left: 8px;
+}
+
+/* =========================================
+   UNSOLD POOL
+========================================= */
+.unsold-pool-box {
+    background: var(--surface-strong);
+    border: 1px solid var(--surface-border);
+    border-radius: 16px;
+    padding: 14px;
+    margin-top: 16px;
+}
+
+.unsold-pool-box .unsold-count {
+    background: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.unsold-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--player-row-bg);
+    border: 1px solid var(--surface-border);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    margin: 3px 4px 0 0;
+    color: var(--text-color);
+    cursor: pointer;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.unsold-chip:hover {
+    background: rgba(0, 210, 255, 0.16);
+    color: var(--accent-1);
+    transform: translateY(-1px);
+}
+
+.round-badge {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+    margin-left: 8px;
+}
+
+/* =========================================
+   UNDO / REDO HISTORY LIST
+========================================= */
+.undo-history-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+}

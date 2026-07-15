@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Karavaloor AuctionX</title>
+    <link href="./vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="./vendor/fontawesome/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <!-- APP LOADER -->
+    <div id="appLoader">
+        <div class="loader-content">
+            <img src="./images/mainlogo.png" class="loader-logo">
+            <h1 class="loader-title">
+                Karavaloor AuctionX
+            </h1>
+            <p class="loader-subtitle">
+                Home Town Premier League Auction Manager
+            </p>
+            <div class="loader-bar">
+                <div class="loader-progress"></div>
+            </div>
+        </div>
+    </div>
+    <!-- SOLD ANIMATION -->
+    <div id="soldAnimation">
+        <div class="sold-box">
+            <img src="./images/mainlogo.png" class="sold-logo">
+            <h1 class="sold-text">
+                SOLD!
+            </h1>
+            <img id="soldTeamLogo" class="sold-team-logo" src="./images/default/teamDefault.png">
+            <h2 id="soldPlayerName"></h2>
+            <p id="soldTeamName"></p>
+            <div class="sold-price" id="soldPriceText"></div>
+        </div>
+    </div>
+    <div class="container py-5">
+        <!-- SETUP SCREEN -->
+        <div id="setupScreen" class="screen active">
+            <div class="main-card p-4 p-md-5">
+                <div class="section-logo">
+                    <img src="./images/mainlogo.png">
+                </div>
+                <button class="btn btn-outline-light theme-toggle-corner" onclick="toggleAppTheme()" title="Switch theme">
+                    <i class="fa fa-circle-half-stroke"></i>
+                </button>
+                <div class="text-center mb-5">
+                    <h1 class="title">
+                        Karavaloor AuctionX
+                    </h1>
+                    <p class="text-light opacity-75">
+                        Create and manage your cricket auction tournament
+                    </p>
+                </div>
+                <div class="col-md-12 mt-2 mb-4">
+
+                    <div class="team-input-card">
+
+                        <label class="mb-2">
+                            Tournament Banner
+                            <small class="opacity-50">
+                                (Optional)
+                            </small>
+                        </label>
+
+                        <input type="file" class="form-control" id="tournamentBanner" accept="image/*">
+
+                    </div>
+
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label class="mb-2">Tournament Name</label>
+                        <input type="text" class="form-control" id="tournamentName">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="mb-2">Total Teams</label>
+                        <input type="number" class="form-control" id="totalTeams">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="mb-2">Players Per Team</label>
+                        <input type="number" class="form-control" id="playersPerTeam" onkeyup="calculateMaxPrice()">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="mb-2">Total Amount Per Team</label>
+                        <input type="number" class="form-control" id="teamAmount" onkeyup="calculateMaxPrice()">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="mb-2">Base Price</label>
+                        <input type="number" class="form-control" id="basePrice" onkeyup="calculateMaxPrice()">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="mb-2">Maximum Price</label>
+                        <input type="number" class="form-control" id="maxPrice" readonly>
+                    </div>
+                    <div class="col-md-12">
+                        <button class="btn btn-primary-custom w-100" onclick="generateTeamInputs()">
+                            Generate Team Inputs
+                        </button>
+                    </div>
+                </div>
+
+                <div id="teamInputs" class="row mt-4"></div>
+                <div class="col-md-12 mt-3">
+
+                    <div class="team-input-card">
+
+                        <label class="mb-3 d-block">
+                            Player Photos
+                            <small class="opacity-50">
+                                (Optional)
+                            </small>
+                        </label>
+
+                        <div class="d-flex gap-4 mb-3">
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="photoMethod"
+                                    id="photoMethodZip" value="zip" checked onchange="togglePhotoMethod()">
+                                <label class="form-check-label" for="photoMethodZip">
+                                    Upload a ZIP of photos
+                                </label>
+                            </div>
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="photoMethod"
+                                    id="photoMethodUrl" value="url" onchange="togglePhotoMethod()">
+                                <label class="form-check-label" for="photoMethodUrl">
+                                    Use an image folder URL
+                                </label>
+                            </div>
+
+                        </div>
+
+                        <div id="photoZipSection">
+
+                            <input type="file" class="form-control" id="playerZipFile"
+                                accept=".zip" onchange="handlePlayerZipUpload(this)">
+
+                            <small class="opacity-75 d-block mt-2">
+                                Name each photo by SL number, e.g. <code>12.jpg</code>, <code>13.png</code>,
+                                then zip them together and upload here.
+                            </small>
+
+                            <small class="d-block mt-1" id="zipUploadStatus"></small>
+
+                        </div>
+
+                        <div id="photoUrlSection" class="d-none">
+
+                            <input type="text" class="form-control" id="playerImageFolder"
+                                placeholder="https://res.cloudinary.com/image/upload/playerimages/">
+
+                            <small class="opacity-75 d-block mt-2">
+                                Photos must be named by SL number, e.g. <code>12.jpg</code>, and this
+                                option needs internet access to load them.
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <label class="mb-2 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <span>Upload Player Excel/CSV</span>
+                            <button type="button" class="btn btn-outline-light btn-sm" onclick="downloadPlayerTemplate()">
+                                <i class="fa fa-download me-2"></i>
+                                Download Excel Template
+                            </button>
+                        </label>
+                        <input type="file" class="form-control" id="playerFile" accept=".csv,.xlsx,.xls">
+                        <small class="opacity-75 d-block mt-2">
+                            Columns: SL No, Player Name (required), Mobile Number, Batsman/Bowler (both optional).
+                        </small>
+                    </div>
+                </div>
+                <div class="col-md-12 mt-4">
+                    <div class="team-input-card">
+                        <label class="mb-3 d-block">
+                            Add Players Manually
+                            <small class="opacity-50">
+                                (Optional — use instead of, or together with, the Excel/CSV upload)
+                            </small>
+                        </label>
+                        <div class="row g-3">
+                            <div class="col-6 col-md-2">
+                                <input type="number" class="form-control" id="manualPlayerSl" placeholder="SL No">
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <input type="text" class="form-control" id="manualPlayerName" placeholder="Player Name">
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <input type="tel" class="form-control" id="manualPlayerMobile" placeholder="Mobile (optional)">
+                            </div>
+                            <div class="col-6 col-md-2">
+                                <select class="form-select" id="manualPlayerRole">
+                                    <option value="">Role (optional)</option>
+                                    <option value="Batsman">Batsman</option>
+                                    <option value="Bowler">Bowler</option>
+                                    <option value="All-rounder">All-rounder</option>
+                                    <option value="Wicketkeeper">Wicketkeeper</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-1">
+                                <button type="button" class="btn btn-primary-custom w-100 h-100" onclick="addManualPlayer()" title="Add player">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="manual-player-table" id="manualPlayerTable"></div>
+                    </div>
+                </div>
+                <div class="mt-5 text-center">
+                    <button class="btn btn-primary-custom px-5" onclick="startAuction()">
+                        Start Auction
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- AUCTION SCREEN -->
+        <div id="auctionScreen" class="screen">
+            <div class="tournament-banner-wrapper mb-4">
+                <img id="tournamentBannerPreview" class="tournament-banner-img"
+                    src="./images/default/bannerDefault.png">
+            </div>
+            <div class="dashboard-card mb-4">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div class="dashboard-header">
+                        <img src="./images/mainlogo.png" class="dashboard-logo">
+                        <div>
+                            <h2 class="title mb-0" id="auctionTournamentName"></h2>
+                            <small class="opacity-75">
+                                Live Auction Dashboard
+                            </small>
+                        </div>
+                    </div>
+                    <div class="toolbar-actions">
+                        <button class="btn btn-primary-custom" id="liveViewToggleBtn" onclick="toggleLiveView()">
+                            <i class="fa fa-wifi me-2"></i>
+                            <span>Start Live View</span>
+                        </button>
+                        <button class="btn btn-outline-light" id="remoteLiveViewToggleBtn" onclick="toggleRemoteLiveView()">
+                            <i class="fa fa-cloud me-2"></i>
+                            <span>Start Remote View</span>
+                        </button>
+                        <button class="btn btn-outline-light live-view-info-btn" onclick="showLiveViewInfo()" title="How does this work?">
+                            <i class="fa fa-circle-info me-2"></i>
+                            <span>Help</span>
+                        </button>
+                        <button class="btn btn-info text-dark" onclick="goToSetup()">
+                            <i class="fa fa-arrow-left me-2"></i>
+                            <span>Back To Setup</span>
+                        </button>
+                        <button class="btn btn-warning" onclick="undoLastAuction()" title="Undo the most recent sale">
+                            <i class="fa fa-rotate-left me-2"></i>
+                            <span>Undo</span>
+                        </button>
+                        <button class="btn btn-outline-light" onclick="redoLastAuction()" title="Redo the last undone sale">
+                            <i class="fa fa-rotate-right me-2"></i>
+                            <span>Redo</span>
+                        </button>
+                        <button class="btn btn-outline-light" onclick="showUndoHistory()" title="Undo multiple sales at once">
+                            <i class="fa fa-clock-rotate-left me-2"></i>
+                            <span>History</span>
+                        </button>
+                        <button class="btn btn-outline-light" onclick="resetAuction()">
+                            <i class="fa fa-refresh me-2"></i>
+                            <span>Reset</span>
+                        </button>
+                        <button class="btn btn-outline-light" onclick="toggleAppTheme()" title="Switch theme">
+                            <i class="fa fa-circle-half-stroke"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="auction-box">
+                        <h4 class="mb-4 section-title">
+                            <i class="fa fa-gavel"></i>
+                            Auction Panel
+                        </h4>
+                        <ul class="nav nav-pills mb-4" role="tablist">
+                            <li class="nav-item me-2">
+                                <button class="nav-link active" data-bs-toggle="pill"
+                                    data-bs-target="#existingPlayerTab">
+                                    <i class="fa fa-user me-2"></i>
+                                    Existing Player
+                                </button>
+                            </li>
+                            <li class="nav-item">
+                                <button class="nav-link" data-bs-toggle="pill" data-bs-target="#newPlayerTab">
+                                    <i class="fa fa-user-plus me-2"></i>
+                                    Add New Player
+                                </button>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="existingPlayerTab">
+                                <div class="mb-3">
+                                    <label class="mb-2">
+                                        Enter Player SL Number
+                                    </label>
+                                    <input type="number" class="form-control mb-2" id="playerNumber">
+                                    <button class="btn btn-primary-custom findPlayer" onclick="findPlayer()">
+                                        <i class="fa fa-magnifying-glass me-2"></i>
+                                        Find Player
+                                    </button>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="mb-2">
+                                        Player Name
+                                    </label>
+                                    <div class="player-name" id="playerName">
+                                        -
+                                    </div>
+                                </div>
+                                <div class="mb-3 d-none">
+                                    <label class="mb-2">
+                                        Select Team
+                                    </label>
+                                    <select class="form-select" id="teamSelect"></select>
+                                </div>
+                                <div class="mb-4 d-none">
+                                    <label class="mb-2">
+                                        Sold Price
+                                    </label>
+                                    <input type="number" class="form-control" id="soldPrice">
+                                </div>
+                                <button class="btn btn-primary-custom w-100 d-none" onclick="sellPlayer()">
+                                    Save Auction
+                                </button>
+                                <button class="btn btn-outline-light w-100 mt-2" id="markUnsoldBtn" onclick="markCurrentPlayerUnsold()" style="display:none;">
+                                    <i class="fa fa-ban me-2"></i>
+                                    Mark Unsold
+                                </button>
+                            </div>
+                            <div class="tab-pane fade" id="newPlayerTab">
+                                <div class="mb-3">
+                                    <label class="mb-2">
+                                        New Player SL Number
+                                    </label>
+                                    <input type="number" class="form-control" id="newPlayerSl">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="mb-2">
+                                        New Player Name
+                                    </label>
+                                    <input type="text" class="form-control" id="newPlayerName">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="mb-2">
+                                        Mobile Number <small class="opacity-50">(optional)</small>
+                                    </label>
+                                    <input type="tel" class="form-control" id="newPlayerMobile">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="mb-2">
+                                        Batsman / Bowler <small class="opacity-50">(optional)</small>
+                                    </label>
+                                    <select class="form-select" id="newPlayerRole">
+                                        <option value="">Not specified</option>
+                                        <option value="Batsman">Batsman</option>
+                                        <option value="Bowler">Bowler</option>
+                                        <option value="All-rounder">All-rounder</option>
+                                        <option value="Wicketkeeper">Wicketkeeper</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn-primary-custom w-100" onclick="addNewPlayer()">
+                                    <i class="fa fa-plus me-2"></i>
+                                    Add Player
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="unsold-pool-box">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h5 class="mb-0">
+                                <i class="fa fa-rotate me-2"></i>
+                                Unsold Pool
+                            </h5>
+                            <span class="unsold-count" id="unsoldCount">0</span>
+                        </div>
+                        <p class="opacity-75 mb-2" style="font-size:0.85rem;">
+                            Players marked unsold come back here for another round.
+                        </p>
+                        <div id="unsoldPoolList" class="mb-3"></div>
+                        <button class="btn btn-primary-custom w-100" onclick="recallNextUnsoldPlayer()">
+                            <i class="fa fa-arrow-rotate-right me-2"></i>
+                            Recall Next Unsold Player
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="summary-box">
+                        <h4 class="mb-4 section-title">
+                            <i class="fa fa-users"></i>
+                            Team Summary
+                        </h4>
+                        <div class="row g-4" id="teamSummary"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="appDialogModal" data-bs-backdrop="static">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content player-card text-white border-secondary">
+
+                <div class="modal-body text-center p-4">
+
+                    <div id="appDialogIcon" class="app-dialog-icon mb-3">
+                        <i class="fa fa-circle-info"></i>
+                    </div>
+
+                    <h5 id="appDialogTitle" class="mb-2">Notice</h5>
+
+                    <p id="appDialogMessage" class="opacity-75 mb-4"></p>
+
+                    <div class="d-flex gap-2 justify-content-center" id="appDialogButtons"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="modal fade" id="playerModal">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content player-card text-white border-secondary">
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                    </h5>
+
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body text-center">
+
+                    <img id="playerPhotoPreview" src="./images/default/playerDefault.png" class="player-popup-img mb-3">
+
+                    <h3 id="popupPlayerName">Player Name</h3>
+                    <span class="round-badge" id="popupRoundBadge" style="display:none;"></span>
+
+                    <div class="mt-4">
+
+                        <label class="mb-2">
+                            Select Team
+                        </label>
+
+                        <select class="form-select" id="popupTeamSelect">
+                        </select>
+
+                    </div>
+
+                    <div class="mt-3">
+
+                        <label class="mb-2">
+                            Sold Amount
+                        </label>
+
+                        <input type="number" class="form-control" id="popupSoldPrice">
+
+                    </div>
+
+                    <button class="btn btn-primary-custom w-100 mt-4" onclick="sellPlayerFromPopup()">
+
+                        Save Auction
+
+                    </button>
+
+                    <button class="btn btn-outline-light w-100 mt-2" onclick="markPopupPlayerUnsold()">
+
+                        <i class="fa fa-ban me-2"></i>
+                        Mark Unsold
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="modal fade" id="undoHistoryModal">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content player-card text-white border-secondary">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                        Undo Multiple Sales
+                    </h5>
+
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body" id="undoHistoryBody">
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="modal fade" id="liveViewModal">
+
+        <div class="modal-dialog modal-dialog-centered">
+
+            <div class="modal-content player-card text-white border-secondary">
+
+                <div class="modal-header">
+
+                    <h5 class="modal-title">
+                        Live View for Owners
+                    </h5>
+
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal">
+                    </button>
+
+                </div>
+
+                <div class="modal-body text-center" id="liveViewModalBody">
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <audio id="soldSound" preload="auto">
+
+        <source src="./audio/sold.mp3" type="audio/mpeg">
+
+    </audio>
+    <script src="./vendor/xlsx.full.min.js"></script>
+    <script src="./vendor/jszip.min.js"></script>
+    <script src="./vendor/qrcode.js"></script>
+    <script src="./firebase-config.js"></script>
+    <script src="./script.js"></script>
+    <script src="./vendor/bootstrap/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
