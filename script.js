@@ -63,6 +63,36 @@ let firebaseUserId = null;
 
 let appDialogInstance = null;
 
+function validatePlayerFileInput(input) {
+
+    const file =
+        input.files[0];
+
+    if (!file) {
+
+        return;
+    }
+
+    const allowedExtensions =
+        ['csv', 'xlsx', 'xls'];
+
+    const fileExtension =
+        file.name
+            .split('.')
+            .pop()
+            .toLowerCase();
+
+    if (!allowedExtensions.includes(fileExtension)) {
+
+        input.value = '';
+
+        showAlert(
+            '"' + file.name + '" is not a supported file. ' +
+            'Please upload a .csv, .xlsx, or .xls file with player details.'
+        );
+    }
+}
+
 function getAppDialog() {
 
     if (!appDialogInstance) {
@@ -605,6 +635,20 @@ async function startAuction() {
 
         filePlayers = [];
 
+        const allowedExtensions =
+            ['csv', 'xlsx', 'xls'];
+
+        if (!allowedExtensions.includes(fileExtension)) {
+
+            showAlert(
+                '"' + file.name + '" is not a supported player file. ' +
+                'Please upload a .csv, .xlsx, or .xls file instead.'
+            );
+            return;
+        }
+
+        try {
+
         if (fileExtension === 'csv') {
 
             const rows =
@@ -683,6 +727,17 @@ async function startAuction() {
                     });
                 }
             });
+        }
+
+        } catch (err) {
+
+            console.error('Player file parsing failed', err);
+
+            showAlert(
+                '"' + file.name + '" could not be read as a player file. ' +
+                'Make sure it\'s a valid .csv, .xlsx, or .xls file and try again.'
+            );
+            return;
         }
 
         finishStartingAuction();

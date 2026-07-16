@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Karavaloor AuctionX</title>
+    <title>AuctionX</title>
     <link href="./vendor/bootstrap/bootstrap.min.css" rel="stylesheet">
     <link href="./vendor/fontawesome/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="./style.css">
@@ -16,7 +16,7 @@
         <div class="loader-content">
             <img src="./images/mainlogo.png" class="loader-logo">
             <h1 class="loader-title">
-                Karavaloor AuctionX
+                AuctionX
             </h1>
             <p class="loader-subtitle">
                 Home Town Premier League Auction Manager
@@ -51,7 +51,7 @@
                 </button>
                 <div class="text-center mb-5">
                     <h1 class="title">
-                        Karavaloor AuctionX
+                        AuctionX
                     </h1>
                     <p class="text-light opacity-75">
                         Create and manage your cricket auction tournament
@@ -175,7 +175,8 @@
                                 Download Excel Template
                             </button>
                         </label>
-                        <input type="file" class="form-control" id="playerFile" accept=".csv,.xlsx,.xls">
+                        <input type="file" class="form-control" id="playerFile" accept=".csv,.xlsx,.xls"
+                            onchange="validatePlayerFileInput(this)">
                         <small class="opacity-75 d-block mt-2">
                             Columns: SL No, Player Name (required), Mobile Number, Batsman/Bowler (both optional).
                         </small>
