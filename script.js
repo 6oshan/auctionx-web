@@ -1741,6 +1741,9 @@ function recallSpecificUnsoldPlayer(sl) {
 
 function renderUnsoldPool() {
 
+    setTimeout(function () { if (typeof renderAuctionStats === "function") renderAuctionStats(); }, 0);
+
+
     const countEl =
         document.getElementById('unsoldCount');
 
@@ -1830,132 +1833,128 @@ function renderSummary() {
             team.balance -
             ((team.playersRemaining - 1) * team.basePrice);
 
+        const spent =
+            team.players.reduce(
+                (sum, p) => sum + (Number(p.price) || 0), 0
+            );
+
+        const purseTotal =
+            (Number(team.balance) || 0) + spent;
+
+        const spentPct =
+            purseTotal > 0
+                ? Math.min(100, Math.round((spent / purseTotal) * 100))
+                : 0;
+
+        const squadTotal =
+            team.players.length + team.playersRemaining;
+
+        const isLow =
+            team.playersRemaining > 0 &&
+            maxBid < team.basePrice;
+
         let playerHtml = '';
 
         team.players.forEach(player => {
 
             playerHtml += `
-
-                <div class="player-row d-flex justify-content-between align-items-center">
-
-                    <div class="d-flex align-items-center gap-2">
-
-    <img
-        src="${getPlayerImage(player.sl)}"
-        onerror="this.src='${defaultPlayerImage}'"
-        class="player-list-img">
-
-            <div>
-
-                    <div class="fw-bold"> #${player.sl} - ${player.name}
-            </div>
-
-            <small> ₹ ${player.price} </small>
-
-            </div>
-
-            </div>
-
+                <div class="player-row">
+                    <div class="player-row-info">
+                        <img
+                            src="${getPlayerImage(player.sl)}"
+                            onerror="this.src='${defaultPlayerImage}'"
+                            class="player-list-img" alt="">
+                        <div class="min-w-0">
+                            <div class="player-row-name"><span class="player-row-sl">#${player.sl}</span>${player.name}</div>
+                            <div class="player-row-price">₹ ${player.price}</div>
+                        </div>
+                    </div>
                     <button class="delete-btn"
-                        onclick="removePlayer(${index}, '${player.sl}')">
-
+                        onclick="removePlayer(${index}, '${player.sl}')"
+                        aria-label="Remove ${player.name} from ${team.name}">
                         <i class="fa fa-trash"></i>
-
                     </button>
-
                 </div>
-
             `;
         });
 
         summary.innerHTML += `
-
             <div class="col-md-6">
-
                 <div class="team-card h-100">
 
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-
-                        <div class="d-flex align-items-center gap-3">
-
-                            <img
-                                src="${team.logo || './images/default/teamDefault.png'}"
-                                class="team-logo-preview" >
-
-                            <div>
-
-                                <h5 class="mb-0">
-                                    ${team.name}
-                                </h5>
-
-                            </div>
-
+                    <div class="team-card-head">
+                        <img
+                            src="${team.logo || './images/default/teamDefault.png'}"
+                            class="team-logo-preview" alt="">
+                        <div class="min-w-0">
+                            <h5 class="team-card-name">${team.name}</h5>
+                            <div class="team-card-sub">${team.playersRemaining} slot${team.playersRemaining === 1 ? '' : 's'} left</div>
                         </div>
-
-                        <span class="badge-custom">
-
-                            ${team.players.length} Players
-
-                        </span>
-
+                        <span class="badge-custom">${team.players.length}/${squadTotal}</span>
                     </div>
 
-                    <div class="d-flex justify-content-between mb-2">
-
-                        <span>Balance</span>
-
-                        <strong>
-                            ₹ ${team.balance}
-                        </strong>
-
+                    <div class="purse-row">
+                        <div>
+                            <div class="purse-label">PURSE LEFT</div>
+                            <div class="purse-value${isLow ? ' low' : ''}">₹ ${team.balance}</div>
+                        </div>
+                        <div class="purse-side">
+                            Max bid <strong>₹ ${maxBid}</strong><br>
+                            Spent <strong>₹ ${spent}</strong>
+                        </div>
                     </div>
 
-                    <div class="d-flex justify-content-between mb-2">
-
-                        <span>Remaining Slots</span>
-
-                        <strong>
-                            ${team.playersRemaining}
-                        </strong>
-
+                    <div class="spend-bar" aria-hidden="true">
+                        <div class="spend-fill" style="width:${spentPct}%"></div>
                     </div>
 
-                    <div class="d-flex justify-content-between mb-3">
-
-                        <span>Max Bid</span>
-
-                        <strong>
-                            ₹ ${maxBid}
-                        </strong>
-
+                    <div class="team-roster">
+                        ${playerHtml || `<div class="team-empty">No players yet</div>`}
                     </div>
 
-                    <hr class="border-secondary">
-
-                    <div class="mb-3">
-
-                        ${playerHtml || `
-                            <div class="opacity-50">
-                                No players yet
-                            </div>
-                        `}
-
-                    </div>
-
-                    <button class="btn btn-outline-light w-100"
+                    <button class="btn btn-outline-light w-100 mt-auto"
                         onclick="printTeam(${index})">
-
                         <i class="fa fa-print me-2"></i>
-
-                        Print Team
-
+                        Print team
                     </button>
 
                 </div>
-
             </div>
         `;
     });
+
+    renderAuctionStats();
+}
+
+/* =========================================
+   AUCTION STATS (sold / unsold / remaining)
+========================================= */
+
+function renderAuctionStats() {
+
+    const soldEl = document.getElementById('statSold');
+
+    if (!soldEl) return;
+
+    const total = Array.isArray(players) ? players.length : 0;
+
+    const soldCount = teams.reduce(
+        (sum, t) => sum + (t.players ? t.players.length : 0), 0
+    );
+
+    const unsoldCount = Array.isArray(unsoldQueue) ? unsoldQueue.length : 0;
+
+    const remaining = Math.max(0, total - soldCount - unsoldCount);
+
+    soldEl.textContent = soldCount;
+    document.getElementById('statUnsold').textContent = unsoldCount;
+    document.getElementById('statRemaining').textContent = remaining;
+
+    const soldPct = total > 0 ? (soldCount / total) * 100 : 0;
+    const unsoldPct = total > 0 ? (unsoldCount / total) * 100 : 0;
+
+    document.getElementById('progressSold').style.width = soldPct + '%';
+    document.getElementById('progressUnsold').style.width = unsoldPct + '%';
 }
 
 /* =========================================
